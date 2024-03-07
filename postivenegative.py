@@ -25,9 +25,21 @@
 
 
 
-# 1. get user input
+# 1. Get user input
 userInput = input('Please type any number: ')
 userInputType = type(userInput)
 print('The type of user input is:', userInputType)
 
-userInputType = fl
+userInputNumber = float(userInput)
+print('The type of userInputNumber is:', type(userInputNumber))
+
+# 2,3 - if else statement and print
+if userInputNumber > 0:
+    print('The number is positive')
+
+elif userInputNumber < 0:
+    print('The number is negative')
+
+elif userInputNumber == 0:
+    print('The number is zero')
+

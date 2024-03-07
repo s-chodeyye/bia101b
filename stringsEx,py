@@ -1,0 +1,16 @@
+# get user input
+# convert the user input into all upper case
+# print the converted string
+
+userInput = input("Enter a string: ")
+userInputconverted = userInput.upper()
+print(userInputconverted)
+
+
+# A - 4
+# o - 0
+#e - 3
+# l - 1`
+# s - 5
+# g - 9
+# 

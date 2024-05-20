@@ -1,0 +1,101 @@
+class Taxpayer:
+    def _init_(self, name, id, salary, deductions):
+        self.name = name
+        self.id = id
+        self.salary = salary
+        self.deductions = deductions
+
+    def calculate_gross_income(self):
+        return self.salary
+
+    def calculate_deductions(self):
+        return sum(self.deductions.values())
+
+    def calculate_net_income(self):
+        return self.calculate_gross_income() - self.calculate_deductions()
+
+    def calculate_tax_from_slabs(self, income):
+        if income <= 300000:
+            return 0
+        elif income <= 400000:
+            return (income - 300000) * 0.1
+        elif income <= 650000:
+            return 10000 + (income - 400000) * 0.15
+        elif income <= 1000000:
+            return 47500 + (income - 650000) * 0.2
+        elif income <= 1500000:
+            return 117500 + (income - 1000000) * 0.25
+        else:
+            tax = 242500 + (income - 1500000) * 0.3
+            # Surcharge if PIT is equal to or more than Nu. 1,000,000
+            if tax >= 1000000:
+                tax += tax * 0.1
+            return tax
+
+    def calculate_tax(self):
+        net_income = self.calculate_net_income()
+        return self.calculate_tax_from_slabs(net_income)
+
+
+class RegularEmployee(Taxpayer):
+    def _init_(self, name, id, salary, deductions, organization_type):
+        super()._init_(name, id, salary, deductions)
+        self.organization_type = organization_type
+
+    def calculate_deductions(self):
+        deductions = super().calculate_deductions()
+        if self.organization_type in ['Corporate', 'Private']:
+            # NPPF and GIS applicable for regular employees in Corporate/Private
+            deductions += self.deductions.get('NPPF', 0)
+            deductions += self.deductions.get('GIS', 0)
+        return deductions
+
+
+class ContractEmployee(Taxpayer):
+    def _init_(self, name, id, salary, deductions):
+        super()._init_(name, id, salary, deductions)
+
+    def calculate_deductions(self):
+        # Contract employees typically do not have NPPF or GIS
+        return super().calculate_deductions()
+
+
+# Example usage
+def main():
+    # Define some deductions
+    deductions_regular = {
+        'education_allowance': 350000,
+        'life_insurance': 100000,
+        'self_education': 150000,
+        'donations': 50000,
+        'NPPF': 50000,
+        'GIS': 20000
+    }
+
+    deductions_contract = {
+        'education_allowance': 350000,
+        'life_insurance': 100000,
+        'self_education': 150000,
+        'donations': 50000
+    }
+
+    # Create instances for regular and contract employees
+    regular_employee = RegularEmployee(name="John Doe", id="E123", salary=1200000, deductions=deductions_regular, organization_type="Corporate")
+    contract_employee = ContractEmployee(name="Jane Smith", id="C456", salary=800000, deductions=deductions_contract)
+    
+    # Calculate tax for regular employeetrial python
+    try:
+        total_tax_regular = regular_employee.calculate_tax()
+        print(f"Total tax payable by {regular_employee.name}: Nu. {total_tax_regular:.2f}")
+    except Exception as e:
+        print(f"Error calculating tax for {regular_employee.name}: {e}")
+
+    # Calculate tax for contract employee
+    try:
+        total_tax_contract = contract_employee.calculate_tax()
+        print(f"Total tax payable by {contract_employee.name}: Nu. {total_tax_contract:.2f}")
+    except Exception as e:
+        print(f"Error calculating tax for {contract_employee.name}: {e}")
+
+if __name__  == "_main_":
+    main()
